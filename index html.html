@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cuentas Claras · Calculadoras online gratis</title>
+<meta name="description" content="Calculadoras gratis: porcentajes, IVA, descuentos, IMC, edad, días entre fechas, préstamos, ahorro, dividir cuenta y conversor de unidades.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light;
+--bg:#eceff2;--card:#fff;--ink:#17202a;--mut:#5b6773;--line:#d2d9e0;--acc:#0e6b5c;--accink:#fff;--lcd:#d8e8cf;--lcdink:#12301d}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#0f151a;--card:#182027;--ink:#e8edf1;--mut:#9aa7b3;--line:#2b3641;--acc:#5fd3b9;--accink:#06221b;--lcd:#1c3326;--lcdink:#b9f0c7}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#0f151a;--card:#182027;--ink:#e8edf1;--mut:#9aa7b3;--line:#2b3641;--acc:#5fd3b9;--accink:#06221b;--lcd:#1c3326;--lcdink:#b9f0c7}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.5}
+.wrap{max-width:980px;margin:0 auto;padding:20px 16px 40px}
+header h1{font-size:clamp(1.9rem,6vw,3rem);line-height:1.05;margin:8px 0 6px;font-weight:800;letter-spacing:-.02em}
+header p{margin:0 0 22px;color:var(--mut);max-width:52ch}
+.grid{display:grid;gap:16px}
+@media(min-width:780px){.grid{grid-template-columns:230px 1fr;align-items:start}}
+nav{display:flex;flex-wrap:wrap;gap:8px}
+@media(min-width:780px){nav{flex-direction:column;flex-wrap:nowrap;gap:4px;position:sticky;top:16px;max-height:calc(100vh - 32px);overflow-y:auto}}
+nav a{display:block;padding:8px 14px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink);text-decoration:none;font-size:.95rem}
+@media(min-width:780px){nav a{border-radius:8px;border-color:transparent;background:transparent}}
+nav a:hover{border-color:var(--acc)}
+nav a[aria-current="true"]{background:var(--acc);color:var(--accink);border-color:var(--acc);font-weight:600}
+a:focus-visible,input:focus-visible,select:focus-visible,button:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px}
+.panel h2{margin:0 0 4px;font-size:1.6rem;font-weight:800;letter-spacing:-.01em}
+.panel .d{margin:0 0 18px;color:var(--mut);max-width:60ch}
+form{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+label{display:grid;gap:4px;font-size:.9rem;color:var(--mut)}
+input,select{font:inherit;font-size:1.05rem;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;width:100%;min-width:0}
+.u{position:relative}.u input{padding-right:3.2rem}
+.u span{position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--mut);pointer-events:none}
+.lcd{margin-top:20px;background:var(--lcd);color:var(--lcdink);border-radius:10px;padding:16px 18px;font-variant-numeric:tabular-nums}
+.lcd small{display:block;opacity:.8;font-size:.95rem}
+.lcd strong{display:block;font-size:clamp(1.8rem,7vw,2.8rem);line-height:1.1;font-weight:800;overflow-wrap:anywhere}
+dl{margin:14px 0 0;display:grid;gap:0}
+dl div{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-top:1px solid var(--line);font-variant-numeric:tabular-nums}
+dt{color:var(--mut)}dd{margin:0;font-weight:600;text-align:right}
+.note{margin:14px 0 0;font-size:.85rem;color:var(--mut)}
+footer{margin-top:28px;font-size:.85rem;color:var(--mut)}
+@media(prefers-reduced-motion:no-preference){.lcd strong{transition:opacity .15s}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<h1>Cuentas Claras</h1>
+<p>Calculadoras gratis para el día a día. Escribe los datos y el resultado aparece al instante.</p>
+</header>
+<div class="grid">
+<nav id="nav" aria-label="Calculadoras"></nav>
+<main>
+<section class="panel" id="panel"></section>
+<!-- Aquí puedes pegar el bloque de anuncios de AdSense cuando te aprueben -->
+</main>
+</div>
+<footer>Los resultados son orientativos y no sustituyen el consejo de un profesional. Cuentas Claras, calculadoras online gratuitas.</footer>
+</div>
+<script>
+const N=(x,d=2)=>isFinite(x)?x.toLocaleString('es-ES',{maximumFractionDigits:d}):'—';
+const E=x=>isFinite(x)?x.toLocaleString('es-ES',{style:'currency',currency:'EUR'}):'—';
+const P=x=>N(x)+' %';
+const today=new Date().toISOString().slice(0,10);
+const plus=n=>new Date(Date.now()+n*864e5).toISOString().slice(0,10);
+const conv=[['km','mi',x=>x*0.621371],['mi','km',x=>x/0.621371],['kg','lb',x=>x*2.204623],['lb','kg',x=>x/2.204623],['°C','°F',x=>x*9/5+32],['°F','°C',x=>(x-32)*5/9],['m','pies',x=>x*3.28084],['pies','m',x=>x/3.28084],['l','gal (EE. UU.)',x=>x*0.264172],['gal (EE. UU.)','l',x=>x/0.264172]];
+const C=[
+{id:'porcentajes',t:'Porcentajes',d:'Calcula el tanto por ciento de una cantidad, qué porcentaje representa un número sobre otro y la variación entre dos valores.',
+ f:[{k:'a',l:'Número A',v:15},{k:'b',l:'Número B',v:200}],
+ r:v=>[[`${N(v.a)} % de ${N(v.b)}`,N(v.a*v.b/100),1],[`${N(v.a)} es el … % de ${N(v.b)}`,P(v.a/v.b*100)],[`Variación de ${N(v.a)} a ${N(v.b)}`,P((v.b-v.a)/v.a*100)]]},
+{id:'iva',t:'IVA',d:'Añade o quita el IVA a un importe. Elige el tipo: general 21 %, reducido 10 % o superreducido 4 %.',
+ f:[{k:'x',l:'Importe',v:100,u:'€'},{k:'t',l:'Tipo de IVA',type:'select',v:'21',o:[['21','21 % general'],['10','10 % reducido'],['4','4 % superreducido']]},{k:'m',l:'El importe es',type:'select',v:'sin',o:[['sin','Sin IVA (base)'],['con','Con IVA incluido']]}],
+ r:v=>{const base=v.m==='sin'?v.x:v.x/(1+v.t/100);const iva=base*v.t/100;return[['Total con IVA',E(base+iva),1],['Base imponible',E(base)],[`IVA (${v.t} %)`,E(iva)]]}},
+{id:'descuento',t:'Descuentos',d:'Descubre cuánto pagas realmente con un descuento y cuánto dinero te ahorras.',
+ f:[{k:'p',l:'Precio original',v:80,u:'€'},{k:'d',l:'Descuento',v:30,u:'%'}],
+ r:v=>[['Precio final',E(v.p*(1-v.d/100)),1],['Ahorras',E(v.p*v.d/100)]]},
+{id:'imc',t:'IMC',d:'El índice de masa corporal relaciona peso y altura. Es una referencia general, no un diagnóstico.',
+ f:[{k:'w',l:'Peso',v:70,u:'kg'},{k:'h',l:'Altura',v:170,u:'cm'}],
+ r:v=>{const i=v.w/Math.pow(v.h/100,2);const c=i<18.5?'Bajo peso':i<25?'Peso normal':i<30?'Sobrepeso':'Obesidad';return[['Tu IMC',N(i,1),1],['Categoría (OMS)',c]]}},
+{id:'edad',t:'Edad exacta',d:'Calcula tu edad en años, meses y días a partir de la fecha de nacimiento.',
+ f:[{k:'n',l:'Fecha de nacimiento',type:'date',v:'1990-01-01'}],
+ r:v=>{const a=new Date(v.n),b=new Date();if(isNaN(a)||a>b)return null;let y=b.getFullYear()-a.getFullYear(),m=b.getMonth()-a.getMonth(),d=b.getDate()-a.getDate();if(d<0){m--;d+=new Date(b.getFullYear(),b.getMonth(),0).getDate()}if(m<0){y--;m+=12}return[['Tienes',`${y} años`,1],['Y además',`${m} meses y ${d} días`],['Días vividos',N(Math.floor((b-a)/864e5),0)]]}},
+{id:'dias',t:'Días entre fechas',d:'Cuenta los días, semanas y días laborables que hay entre dos fechas.',
+ f:[{k:'a',l:'Desde',type:'date',v:today},{k:'b',l:'Hasta',type:'date',v:plus(30)}],
+ r:v=>{let a=new Date(v.a),b=new Date(v.b);if(isNaN(a)||isNaN(b))return null;if(a>b)[a,b]=[b,a];const t=Math.round((b-a)/864e5);let w=0;for(let i=0,d=new Date(a);i<t&&i<40000;i++,d.setDate(d.getDate()+1)){const g=d.getDay();if(g&&g<6)w++}return[['Días de diferencia',N(t,0),1],['Semanas',N(t/7,1)],['Días laborables (lun-vie)',N(w,0)]]}},
+{id:'prestamo',t:'Préstamo e hipoteca',d:'Calcula la cuota mensual de un préstamo o hipoteca con interés fijo, y cuánto pagas en intereses.',
+ f:[{k:'c',l:'Importe',v:150000,u:'€'},{k:'i',l:'Interés anual',v:3.2,u:'%'},{k:'y',l:'Plazo',v:25,u:'años'}],
+ r:v=>{const i=v.i/1200,n=v.y*12;const q=i?v.c*i/(1-Math.pow(1+i,-n)):v.c/n;return[['Cuota mensual',E(q),1],['Total a pagar',E(q*n)],['Intereses totales',E(q*n-v.c)]]}},
+{id:'ahorro',t:'Ahorro e interés compuesto',d:'Mira en cuánto se convierte tu dinero si ahorras cada mes y reinviertes los intereses.',
+ f:[{k:'c',l:'Capital inicial',v:1000,u:'€'},{k:'a',l:'Aportación mensual',v:100,u:'€'},{k:'i',l:'Rentabilidad anual',v:5,u:'%'},{k:'y',l:'Años',v:10,u:'años'}],
+ r:v=>{const i=v.i/1200,n=v.y*12;const g=Math.pow(1+i,n);const f=i?v.c*g+v.a*(g-1)/i:v.c+v.a*n;const ap=v.c+v.a*n;return[['Dinero final',E(f),1],['Aportado por ti',E(ap)],['Intereses ganados',E(f-ap)]]}},
+{id:'cuenta',t:'Dividir la cuenta',d:'Reparte una cuenta entre amigos, con propina opcional.',
+ f:[{k:'t',l:'Total de la cuenta',v:96,u:'€'},{k:'n',l:'Personas',v:4},{k:'p',l:'Propina',v:5,u:'%'}],
+ r:v=>{const tot=v.t*(1+v.p/100);return[['Cada persona paga',E(tot/v.n),1],['Total con propina',E(tot)],['Propina',E(tot-v.t)]]}},
+{id:'conversor',t:'Conversor de unidades',d:'Convierte entre kilómetros y millas, kilos y libras, grados Celsius y Fahrenheit, metros y pies, litros y galones.',
+ f:[{k:'x',l:'Valor',v:10},{k:'c',l:'Conversión',type:'select',v:'0',o:conv.map((c,i)=>[String(i),`${c[0]} → ${c[1]}`])}],
+ r:v=>{const c=conv[+v.c];return[[`${N(v.x)} ${c[0]} equivalen a`,`${N(c[2](v.x),4)} ${c[1]}`,1]]}},
+{id:'calorias',t:'Calorías diarias',d:'Estima cuántas calorías gastas al día y cuántas necesitas para mantener, bajar o subir de peso.',
+ f:[{k:'s',l:'Sexo',type:'select',v:'h',o:[['h','Hombre'],['m','Mujer']]},{k:'e',l:'Edad',v:35,u:'años'},{k:'w',l:'Peso',v:70,u:'kg'},{k:'h',l:'Altura',v:170,u:'cm'},{k:'a',l:'Actividad',type:'select',v:'1.375',o:[['1.2','Sedentaria'],['1.375','Ligera (1-3 días/semana)'],['1.55','Moderada (3-5 días)'],['1.725','Alta (6-7 días)']]}],
+ r:v=>{const b=10*v.w+6.25*v.h-5*v.e+(v.s==='h'?5:-161),m=b*v.a;return[['Para mantener tu peso',N(m,0)+' kcal',1],['Metabolismo basal',N(b,0)+' kcal'],['Para bajar peso poco a poco',N(m-400,0)+' kcal'],['Para subir peso poco a poco',N(m+300,0)+' kcal']]}},
+{id:'regla-de-tres',t:'Regla de tres',d:'Resuelve una regla de tres simple directa: si A corresponde a B, ¿a cuánto corresponde C?',
+ f:[{k:'a',l:'A',v:3},{k:'b',l:'B',v:12},{k:'c',l:'C',v:5}],
+ r:v=>[[`Si ${N(v.a)} es a ${N(v.b)}, ${N(v.c)} es a`,N(v.b*v.c/v.a,4),1]]},
+{id:'combustible',t:'Coste del viaje en coche',d:'Calcula cuánto gasolina o diésel necesitas para un viaje y cuánto toca pagar a cada persona.',
+ f:[{k:'d',l:'Distancia',v:400,u:'km'},{k:'c',l:'Consumo',v:6.5,u:'l/100'},{k:'p',l:'Precio del litro',v:1.6,u:'€'},{k:'n',l:'Personas',v:2}],
+ r:v=>{const l=v.d*v.c/100,t=l*v.p;return[['Coste del combustible',E(t),1],['Por persona',E(t/v.n)],['Litros necesarios',N(l,1)+' l']]}},
+{id:'margen',t:'Margen y beneficio',d:'Para tiendas y autónomos: calcula el beneficio, el margen sobre ventas y el recargo sobre el coste.',
+ f:[{k:'c',l:'Coste del producto',v:40,u:'€'},{k:'p',l:'Precio de venta',v:70,u:'€'}],
+ r:v=>[['Beneficio por unidad',E(v.p-v.c),1],['Margen sobre ventas',P((v.p-v.c)/v.p*100)],['Recargo sobre coste',P((v.p-v.c)/v.c*100)]]},
+{id:'areas',t:'Áreas y perímetros',d:'Calcula el área y el perímetro de un rectángulo, un círculo o un triángulo.',
+ f:[{k:'s',l:'Figura',type:'select',v:'r',o:[['r','Rectángulo (A ancho, B alto)'],['c','Círculo (A radio)'],['t','Triángulo (A base, B altura)']]},{k:'a',l:'Medida A',v:5},{k:'b',l:'Medida B',v:3}],
+ r:v=>v.s==='r'?[['Área',N(v.a*v.b,3),1],['Perímetro',N(2*(v.a+v.b),3)]]:v.s==='c'?[['Área',N(Math.PI*v.a*v.a,3),1],['Circunferencia',N(2*Math.PI*v.a,3)]]:[['Área',N(v.a*v.b/2,3),1]]},
+{id:'nota-media',t:'Nota media ponderada',d:'Calcula la media de tus notas según el peso de cada examen o asignatura.',
+ f:[{k:'a',l:'Nota 1',v:7},{k:'x',l:'Peso 1',v:30,u:'%'},{k:'b',l:'Nota 2',v:6},{k:'y',l:'Peso 2',v:30,u:'%'},{k:'c',l:'Nota 3',v:8},{k:'z',l:'Peso 3',v:40,u:'%'}],
+ r:v=>{const s=v.x+v.y+v.z;return[['Nota media',N((v.a*v.x+v.b*v.y+v.c*v.z)/s,2),1],['Suma de pesos',P(s)]]}},
+{id:'sumar-dias',t:'Sumar o restar días',d:'Averigua qué fecha será dentro de X días, o cuál fue hace X días (con un número negativo).',
+ f:[{k:'f',l:'Fecha de partida',type:'date',v:today},{k:'n',l:'Días a sumar',v:90}],
+ r:v=>{const d=new Date(v.f);if(isNaN(d))return null;d.setDate(d.getDate()+Math.round(v.n));return[['Fecha resultante',d.toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long',year:'numeric'}),1]]}},
+{id:'sueldo-neto',t:'Sueldo neto',d:'Estima cuánto cobrarás al mes y al año a partir del salario bruto anual, con las cotizaciones de 2026 y una retención de IRPF aproximada.',
+ f:[{k:'b',l:'Salario bruto anual',v:30000,u:'€'},{k:'p',l:'Pagas al año',type:'select',v:'14',o:[['12','12 (prorrateadas)'],['14','14 pagas']]},{k:'h',l:'Hijos a cargo',type:'select',v:'0',o:[['0','Ninguno'],['1','1 hijo'],['2','2 hijos'],['3','3 hijos']]}],
+ r:v=>{const ss=Math.min(v.b/12,5101.2)*12*0.065,mf=5550+[0,2400,5100,9100][+v.h],ir=Math.max(irpf(Math.max(v.b-ss-2000,0))-irpf(mf),0),neto=v.b-ss-ir;return[[`Sueldo neto al mes (${v.p} pagas)`,E(neto/v.p),1],['Neto anual',E(neto)],['Seguridad Social (6,5 %)',E(ss)],[`IRPF estimado (${N(ir/v.b*100,1)} %)`,E(ir)]]}},
+{id:'finiquito',t:'Finiquito e indemnización',d:'Calcula el finiquito (días trabajados, vacaciones y paga extra pendientes) y, si te despiden, la indemnización aproximada.',
+ f:[{k:'b',l:'Salario bruto anual',v:24000,u:'€'},{k:'p',l:'Pagas al año',type:'select',v:'14',o:[['12','12 (prorrateadas)'],['14','14 pagas']]},{k:'a',l:'Antigüedad',v:3,u:'años'},{k:'d',l:'Días trabajados del mes',v:15,u:'días'},{k:'v',l:'Vacaciones pendientes',v:5,u:'días'},{k:'e',l:'Meses desde la última paga extra',v:3,u:'meses'},{k:'t',l:'Tipo de salida',type:'select',v:'fin',o:[['fin','Solo finiquito (baja voluntaria o fin de contrato)'],['obj','Despido objetivo (20 días por año)'],['imp','Despido improcedente (33 días por año)']]}],
+ r:v=>{const np=+v.p,dia=v.b/365,mes=v.b/np,t=mes/30*v.d,va=dia*v.v,ex=np===14?mes*Math.min(v.e,6)/6:0,ind=v.t==='fin'?0:Math.min(v.a*dia*(v.t==='obj'?20:33),v.b*(v.t==='obj'?1:2));return[['Total bruto',E(t+va+ex+ind),1],['Días trabajados del mes',E(t)],['Vacaciones no disfrutadas',E(va)],['Parte de paga extra',E(ex)],['Indemnización por despido',E(ind)]]}},
+{id:'divisas',t:'Conversor de divisas',d:'Convierte entre euro, dólar, libra, dólar canadiense, peso mexicano, yuan e rupia india con tipos de cambio orientativos.',
+ f:[{k:'x',l:'Importe',v:100},{k:'a',l:'De',type:'select',v:'EUR',o:'EUR USD GBP CAD MXN CNY INR'.split(' ').map(c=>[c,c])},{k:'b',l:'A',type:'select',v:'USD',o:'EUR USD GBP CAD MXN CNY INR'.split(' ').map(c=>[c,c])}],
+ r:v=>{const RT={EUR:1,USD:1.13,GBP:0.87,CAD:1.5798,MXN:20.7481,CNY:7.4991,INR:106.559};return[[`${N(v.x)} ${v.a} equivalen a`,N(v.x/RT[v.a]*RT[v.b],2)+' '+v.b,1],[`1 ${v.a}`,`${N(RT[v.b]/RT[v.a],4)} ${v.b}`]]}}
+];
+const irpf=b=>{let c=0,p=0;for(const[l,r]of[[12450,.19],[20200,.24],[35200,.30],[60000,.37],[300000,.45],[Infinity,.47]]){if(b>p)c+=(Math.min(b,l)-p)*r;p=l}return c};
+const X={
+'sueldo-neto':'Se descuenta la Seguridad Social del trabajador en 2026 (contingencias comunes 4,70 %, desempleo 1,55 %, formación 0,10 % y MEI 0,15 %, con tope de base de 5.101,20 € al mes) y el IRPF, estimado con la escala general de tramos y los mínimos personal y por hijos. Es orientativo: tu retención real depende de tu comunidad autónoma y de tu situación personal.',
+finiquito:'El finiquito suma los días trabajados del mes, las vacaciones no disfrutadas y la parte proporcional de las pagas extra. La indemnización es de 20 días por año en el despido objetivo (máximo 12 mensualidades) y de 33 días por año en el improcedente (máximo 24). Para contratos anteriores a febrero de 2012 el cálculo cambia, y las cantidades son brutas.',
+divisas:'Los tipos son orientativos, basados en las referencias del Banco de España de octubre de 2026 (el dólar y la libra son aproximados). Tu banco o cambista aplicará su propio tipo y comisiones, así que comprueba el cambio real antes de operar.',
+porcentajes:'Para hallar el X % de una cantidad se multiplica la cantidad por X y se divide entre 100. Para saber qué porcentaje es A de B, se divide A entre B y se multiplica por 100.',
+iva:'Para añadir IVA se multiplica la base por 1,21 (o 1,10 / 1,04). Para quitarlo se divide el total entre ese mismo número. Canarias, Ceuta y Melilla tienen impuestos distintos.',
+descuento:'El precio final es el original multiplicado por (1 − descuento/100). Dos descuentos seguidos no se suman: el segundo se aplica sobre el precio ya rebajado.',
+imc:'El IMC es el peso en kilos dividido entre la altura en metros al cuadrado. No distingue músculo de grasa, así que consulta a un profesional sanitario ante cualquier duda.',
+prestamo:'Se usa amortización francesa con cuota fija: cada mes pagas lo mismo, con más intereses al principio y más capital al final. No incluye comisiones, seguros ni cambios de tipo.',
+ahorro:'Cada mes los intereses se suman al capital y generan nuevos intereses. Es un cálculo teórico con rentabilidad constante: las inversiones reales suben y bajan.',
+calorias:'Se calcula el metabolismo basal con la fórmula de Mifflin-St Jeor y se multiplica por tu nivel de actividad. Es una estimación general; un dietista puede ajustarla a tu caso.',
+combustible:'Los litros son distancia × consumo ÷ 100, y el coste es esa cantidad por el precio del litro. No incluye peajes ni aparcamiento.',
+margen:'El margen sobre ventas es el beneficio entre el precio de venta. El recargo (markup) divide el mismo beneficio entre el coste, por eso siempre sale mayor.',
+cuenta:'Se suma la propina al total y se divide entre el número de personas.'
+};
+const nav=document.getElementById('nav'),panel=document.getElementById('panel');
+nav.innerHTML=C.map(c=>`<a href="#${c.id}" data-id="${c.id}">${c.t}</a>`).join('');
+function show(id){
+ const c=C.find(x=>x.id===id)||C[0];
+ nav.querySelectorAll('a').forEach(a=>a.setAttribute('aria-current',a.dataset.id===c.id));
+ document.title=`${c.t} · Cuentas Claras`;
+ const fld=c.f.map(f=>{
+  let i;
+  if(f.type==='select')i=`<select id="f_${f.k}">${f.o.map(o=>`<option value="${o[0]}"${o[0]==f.v?' selected':''}>${o[1]}</option>`).join('')}</select>`;
+  else if(f.type==='date')i=`<input id="f_${f.k}" type="date" value="${f.v}">`;
+  else i=`<div class="u"><input id="f_${f.k}" type="text" inputmode="decimal" autocomplete="off" value="${String(f.v).replace('.',',')}">${f.u?`<span>${f.u}</span>`:''}</div>`;
+  return `<label>${f.l}${i}</label>`}).join('');
+ panel.innerHTML=`<h2>${c.t}</h2><p class="d">${c.d}</p><form onsubmit="return false">${fld}</form><div id="out" aria-live="polite"></div>${X[c.id]?`<h3 style="margin:24px 0 4px;font-size:1.05rem">Cómo funciona</h3><p class="d" style="margin:0">${X[c.id]}</p>`:''}`;
+ const calc=()=>{
+  const v={};c.f.forEach(f=>{const e=document.getElementById('f_'+f.k).value;v[f.k]=(f.type==='select'||f.type==='date')?e:parseFloat(e.replace(',','.'))});
+  const res=c.r(v),out=document.getElementById('out');
+  if(!res||Object.values(v).some(x=>typeof x==='number'&&!isFinite(x))){out.innerHTML='<div class="lcd"><small>Resultado</small><strong>—</strong></div><p class="note">Revisa que todos los campos tengan un valor válido.</p>';return}
+  const m=res.find(r=>r[2])||res[0],rest=res.filter(r=>r!==m);
+  out.innerHTML=`<div class="lcd"><small>${m[0]}</small><strong>${m[1]}</strong></div>`+(rest.length?`<dl>${rest.map(r=>`<div><dt>${r[0]}</dt><dd>${r[1]}</dd></div>`).join('')}</dl>`:'');
+ };
+ panel.querySelectorAll('input,select').forEach(e=>e.addEventListener('input',calc));
+ calc();
+}
+const go=()=>show(location.hash.slice(1));
+addEventListener('hashchange',go);
+nav.addEventListener('click',e=>{const a=e.target.closest('a');if(a){e.preventDefault();try{history.replaceState(null,'','#'+a.dataset.id)}catch(_){}show(a.dataset.id)}});
+go();
+</script>
+</body>
+</html>
